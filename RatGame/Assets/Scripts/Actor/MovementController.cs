@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Actor
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class MovementController : MonoBehaviour
 	{
-		[FormerlySerializedAs("speed")] [SerializeField, Range(0f, 100f)] 
+		[SerializeField, Range(0f, 1000f)] 
 		public float maxSpeed = 10f;
-		[SerializeField, Range(0f, 100f)] 
+		[SerializeField, Range(0f, 1000f)] 
 		public float maxAcceleration = 10f;
 
 		private Vector3 _desiredVelocity;

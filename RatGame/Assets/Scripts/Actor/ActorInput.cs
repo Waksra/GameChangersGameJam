@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Actor
 {
@@ -17,7 +18,19 @@ namespace Actor
 
 		private void OnEnable()
 		{
-			
+			_gameControls.Default.Move.performed += OnMovePerformed;
+			_gameControls.Enable();
+		}
+
+		private void OnDisable()
+		{
+			_gameControls.Disable();
+			_gameControls.Default.Move.performed -= OnMovePerformed;
+		}
+
+		private void OnMovePerformed(InputAction.CallbackContext context)
+		{
+			_actorBase.SetMove(context.ReadValue<Vector2>());
 		}
 	}
 }
