@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 public class BoidManager : StaticManager<BoidManager>
 {
 	private List<Boid> Boids = new List<Boid>();
-
 	private GameControls GameControls;
+	private int CurrentID = 0;
 
 	public Vector2 CurrentInput = Vector2.zero;
 	
@@ -15,6 +15,7 @@ public class BoidManager : StaticManager<BoidManager>
 		GameControls = new GameControls();
 		GameControls.Enable();
 
+		CurrentID = 0;
 		GameControls.Default.Move.performed += OnMovePerformed;
 	}
 
@@ -23,21 +24,29 @@ public class BoidManager : StaticManager<BoidManager>
 		CurrentInput = obj.ReadValue<Vector2>();
 	}
 
-	public List<Boid> GetBoidsInDistance(float Distance, Vector3 CallerPosition)
+	public List<Boid> GetBoidsInDistance(float Distance, Boid Caller)
 	{
 		List<Boid> boidsInDistance = new List<Boid>();
-		foreach (Boid g in Boids)
+
+		Vector3 callerPosition = Caller.transform.position;
+		
+		foreach (Boid b in Boids)
 		{
-			if(Vector3.Distance(g.transform.position, CallerPosition) < Distance)
+			if (b.ID == Caller.ID)
+				continue;
+			
+			if(Vector3.Distance(b.transform.position, callerPosition) < Distance)
 			{
-				boidsInDistance.Add(g);
+				boidsInDistance.Add(b);
 			}
 		}
 		return boidsInDistance;
 	}
 
-	public void AddBoid(Boid BoidToAdd)
+	public int AddBoid(Boid BoidToAdd)
 	{
 		Boids.Add(BoidToAdd);
+		CurrentID++;
+		return CurrentID;
 	}
 }

@@ -33,9 +33,9 @@ namespace Actor
 		{
 			Vector3 velocity = _body.velocity;
 			_desiredVelocity.y = velocity.y;
-			float maxVelocityChange = maxAcceleration * Time.deltaTime;
+			float maxVelocityChange = maxAcceleration;
         
-			velocity = Vector3.MoveTowards(velocity, _desiredVelocity, maxVelocityChange);
+			velocity = Vector3.ClampMagnitude(Vector3.MoveTowards(velocity, _desiredVelocity, maxVelocityChange), maxSpeed);
         
 			_body.velocity = velocity;
 		}
