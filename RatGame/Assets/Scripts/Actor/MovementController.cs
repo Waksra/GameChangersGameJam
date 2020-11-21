@@ -33,6 +33,7 @@ namespace Actor
 		private void FixedUpdate()
 		{
 			Vector3 velocity = _body.velocity;
+			_desiredVelocity.y = velocity.y;
 			float maxVelocityChange = maxAcceleration * Time.deltaTime;
         
 			velocity = Vector3.MoveTowards(velocity, _desiredVelocity, maxVelocityChange);
