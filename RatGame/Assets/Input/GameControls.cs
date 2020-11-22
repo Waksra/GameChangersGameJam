@@ -33,6 +33,14 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""5378a96a-5590-4e6a-80a6-2b9c5703baa4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -101,6 +109,17 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1eb70427-ba32-480c-9960-afa6368b2d03"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -111,6 +130,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_Move = m_Default.FindAction("Move", throwIfNotFound: true);
         m_Default_Restart = m_Default.FindAction("Restart", throwIfNotFound: true);
+        m_Default_Exit = m_Default.FindAction("Exit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -162,12 +182,14 @@ public class @GameControls : IInputActionCollection, IDisposable
     private IDefaultActions m_DefaultActionsCallbackInterface;
     private readonly InputAction m_Default_Move;
     private readonly InputAction m_Default_Restart;
+    private readonly InputAction m_Default_Exit;
     public struct DefaultActions
     {
         private @GameControls m_Wrapper;
         public DefaultActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Default_Move;
         public InputAction @Restart => m_Wrapper.m_Default_Restart;
+        public InputAction @Exit => m_Wrapper.m_Default_Exit;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -183,6 +205,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Restart.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
                 @Restart.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
                 @Restart.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
+                @Exit.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnExit;
+                @Exit.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnExit;
+                @Exit.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnExit;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -193,6 +218,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Restart.started += instance.OnRestart;
                 @Restart.performed += instance.OnRestart;
                 @Restart.canceled += instance.OnRestart;
+                @Exit.started += instance.OnExit;
+                @Exit.performed += instance.OnExit;
+                @Exit.canceled += instance.OnExit;
             }
         }
     }
@@ -201,5 +229,6 @@ public class @GameControls : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
+        void OnExit(InputAction.CallbackContext context);
     }
 }

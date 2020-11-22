@@ -29,6 +29,7 @@ namespace Player
 		{
 			_gameControls.Default.Move.performed += OnMovePerformed;
 			_gameControls.Default.Restart.performed += OnRestartPerformed;
+			_gameControls.Default.Exit.performed += OnExitPerformed;
 			_gameControls.Enable();
 			
 			StartCoroutine(MoveCommandCoroutine());
@@ -38,6 +39,8 @@ namespace Player
 		{
 			_gameControls.Disable();
 			_gameControls.Default.Move.performed -= OnMovePerformed;
+			_gameControls.Default.Restart.performed -= OnRestartPerformed;
+			_gameControls.Default.Exit.performed -= OnExitPerformed;
 			
 			StopAllCoroutines();
 		}
@@ -54,6 +57,13 @@ namespace Player
 				_targetPosition = _swarmCenter + inputInWorld * moveTargetLead;
 				GridController.Instance.PathToWorldPosition(_targetPosition);
 			}
+		}
+
+		private void OnExitPerformed(InputAction.CallbackContext obj)
+		{
+			if(Application.isEditor)
+				return;
+			Application.Quit();
 		}
 
 		private void OnRestartPerformed(InputAction.CallbackContext obj)
