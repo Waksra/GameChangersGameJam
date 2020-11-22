@@ -18,5 +18,13 @@ namespace Actor
 
 			_movementController.MoveVector = movement;
 		}
+
+		public void SetMaxMoveSpeed(float maxMovementSpeed)
+		{
+			if (!_hasMovementController) return;
+			
+			_movementController.maxSpeed = maxMovementSpeed;
+		}
+		
 	}
 }
