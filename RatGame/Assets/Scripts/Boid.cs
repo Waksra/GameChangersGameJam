@@ -24,10 +24,13 @@ public class Boid : MonoBehaviour
     [System.NonSerialized]
     public int ID;
     private ActorBase ActorBase = null;
+
+    private Transform OwnTransform;
     
     private void Awake()
     {
         ActorBase = GetComponent<ActorBase>();
+        OwnTransform = transform;
     }
 
     void Start()
@@ -47,9 +50,9 @@ public class Boid : MonoBehaviour
         Velocity = speed * dir;
         dir.y = 0;
         
-        transform.forward = dir;
+        OwnTransform.forward = dir;
         ActorBase.SetMove(new Vector2(Velocity.x, Velocity.z));
-        Debug.DrawLine(transform.position, transform.position + Velocity, Color.blue);
+        Debug.DrawLine(OwnTransform.position, OwnTransform.position + Velocity, Color.blue);
     }
 
     private Vector3 CalculateDesiredDirection()
@@ -68,7 +71,7 @@ public class Boid : MonoBehaviour
         
         foreach (Boid b in neighbours)
         {
-            separation += transform.position - b.transform.position;
+            separation += OwnTransform.position - b.transform.position;
         }
 
         separation = Vector3.ClampMagnitude(separation, MaxSteering);
@@ -109,7 +112,7 @@ public class Boid : MonoBehaviour
 
         cohesion /= neighbours.Count;
         
-        cohesion -= transform.position;
+        cohesion -= OwnTransform.position;
 
         cohesion = Vector3.ClampMagnitude(cohesion, MaxSteering);
         
@@ -131,11 +134,11 @@ public class Boid : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, AlignmentRadius);
+        Gizmos.DrawWireSphere(OwnTransform.position, AlignmentRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, SeparationRadius);
+        Gizmos.DrawWireSphere(OwnTransform.position, SeparationRadius);
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, CohesionRadius);
+        Gizmos.DrawWireSphere(OwnTransform.position, CohesionRadius);
     }
 
     

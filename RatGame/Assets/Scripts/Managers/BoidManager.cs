@@ -43,6 +43,17 @@ public class BoidManager : StaticManager<BoidManager>
 		return boidsInDistance;
 	}
 
+	public Vector3 GetCenterOfSwarm()
+	{
+		Vector3 position = Vector3.zero;
+		foreach (Boid boid in Boids)
+		{
+			position += boid.transform.position;
+		}
+
+		return position / Boids.Count;
+	}
+
 	public int AddBoid(Boid BoidToAdd)
 	{
 		Boids.Add(BoidToAdd);
