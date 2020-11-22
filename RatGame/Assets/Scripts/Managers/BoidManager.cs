@@ -88,6 +88,11 @@ public class BoidManager : StaticManager<BoidManager>
 
 	public void RemovePrey(ActorBase preyToRemove)
 	{
+		foreach (Boid b in Boids)
+		{
+			if (b.HasPrey(preyToRemove))
+				b.RemovePrey();
+		}
 		Prey.Remove(preyToRemove);
 	}
 }

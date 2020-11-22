@@ -16,6 +16,7 @@ public class Peasant : MonoBehaviour
 
 	private ActorBase ActorBase = null;
 	private Animator Animator = null;
+	private PreySetter PreySetter = null;
 
 	private Vector3 RunningDirection = Vector3.zero;
 	private Vector3 WalkDestination = Vector3.zero;
@@ -23,6 +24,9 @@ public class Peasant : MonoBehaviour
 
 	private IEnumerator CurrentWanderingRoutine = null;
 
+	private Rigidbody Body = null;
+	private Joint Joint = null;
+	
 	[SerializeField] private LayerMask RatLayer;
 
 	[SerializeField] private float RatCheckDistance = 1.0f;
@@ -31,6 +35,8 @@ public class Peasant : MonoBehaviour
 	[SerializeField] private float WalkingSpeed = 2.0f;
 	[SerializeField] private Vector2 WalkRadiusMinMax = new Vector2(4, 10);
 	[SerializeField] private float IdleDelay = 5.0f;
+	[SerializeField] private float DamageDelay = 0.2f;
+	[SerializeField] private float DamagePerDelay = 5.0f;
 	
 	private static readonly int TimeToWalk = Animator.StringToHash("TimeToWalk");
 	private static readonly int NoRatNearby = Animator.StringToHash("NoRatNearby");
@@ -41,6 +47,10 @@ public class Peasant : MonoBehaviour
 	{
 		ActorBase = GetComponent<ActorBase>();
 		Animator = GetComponent<Animator>();
+
+		Body = GetComponent<Rigidbody>();
+
+		PreySetter = GetComponent<PreySetter>();
 
 		CurrentWanderingRoutine = Wander();
 	}
@@ -63,6 +73,17 @@ public class Peasant : MonoBehaviour
 		}
 	}
 
+	private void OnCollisionEnter(Collision other)
+	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
+		
+		if (RatLayer == (RatLayer | (1 << other.gameObject.layer)))
+		{
+			StartBeingEaten(other.rigidbody);
+		}
+	}
+
 	private void Start()
 	{
 		StartIdling();
@@ -71,6 +92,8 @@ public class Peasant : MonoBehaviour
 
 	private void StartIdling()
 	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
 		State = PeasantState.IDLE;
 		StopCoroutine(CurrentWanderingRoutine);
 		CurrentWanderingRoutine = Wander();
@@ -79,6 +102,8 @@ public class Peasant : MonoBehaviour
 
 	private void StartRunning()
 	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
 		State = PeasantState.RUNNING;
 		ActorBase.SetMaxMoveSpeed(RunningSpeed);
 		Animator.SetTrigger(RatFound);
@@ -86,6 +111,8 @@ public class Peasant : MonoBehaviour
 
 	private void StopRunning()
 	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
 		StartIdling();
 		ActorBase.SetMove(Vector2.zero);
 		Animator.SetTrigger(NoRatNearby);
@@ -93,6 +120,8 @@ public class Peasant : MonoBehaviour
 
 	private void StartWalking()
 	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
 		State = PeasantState.WANDERING;
 		ActorBase.SetMaxMoveSpeed(WalkingSpeed);
 		Animator.SetTrigger(TimeToWalk);
@@ -100,14 +129,33 @@ public class Peasant : MonoBehaviour
 
 	private void StopWalking()
 	{
+		if (State == PeasantState.BEING_EATEN)
+			return;
 		StartIdling();
 		ActorBase.SetMove(Vector2.zero);
 		Animator.SetTrigger(WalkingDestinationReached);
 	}
 
-	private void StartBeingEaten()
+	private void StartBeingEaten(Rigidbody rat)
 	{
-		
+		State = PeasantState.BEING_EATEN;
+		Body.constraints = RigidbodyConstraints.None;
+		Joint = gameObject.AddComponent<HingeJoint>();
+		Joint.connectedBody = rat;
+		Body.useGravity = true;
+		// Animator.enabled = false;
+		PreySetter.RemoveAsPrey();
+		StopAllCoroutines();
+		StartCoroutine(TakeDamage());
+	}
+
+	private IEnumerator TakeDamage()
+	{
+		while (true)
+		{
+			ActorBase.Damage(DamagePerDelay);
+			yield return new WaitForSeconds(DamageDelay);
+		}
 	}
 
 	private IEnumerator SenseRats()

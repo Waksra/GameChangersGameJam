@@ -20,6 +20,11 @@ namespace Actor
 			SetAsPrey();
 		}
 
+		private void OnDisable()
+		{
+			RemoveAsPrey();
+		}
+
 		public void SetAsPrey()
 		{
 			if(IsSetAsPrey)

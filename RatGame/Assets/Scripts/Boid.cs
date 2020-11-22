@@ -60,7 +60,8 @@ public class Boid : MonoBehaviour
         ActorBase = GetComponent<ActorBase>();
         OwnTransform = transform;
         Animator = GetComponentInChildren<Animator>();
-        Animator.SetFloat("StartOffset", Random.Range(0, 1));
+        float random = Random.Range(0, 2);
+        Animator.SetFloat("StartOffset", random);
     }
 
     void Start()
@@ -221,11 +222,23 @@ public class Boid : MonoBehaviour
         }
     }
 
+    public bool HasPrey(ActorBase prey)
+    {
+        return prey == _targetPrey;
+    }
+
+    public void RemovePrey()
+    {
+        // _targetPrey = null;
+        _hasTargetPrey = false;
+    }
+
     private IEnumerator CalculatePreyAcceleration()
     {
         WaitForSeconds delay = new WaitForSeconds(PreyDirectonFrequency);
         while (true)
         {
+            _preyAcceleration = Vector3.zero;
             yield return delay;
             if(!_hasTargetPrey)
                 continue;
