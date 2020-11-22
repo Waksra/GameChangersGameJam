@@ -73,6 +73,14 @@ public class Peasant : MonoBehaviour
 		}
 	}
 
+	private void OnDisable()
+	{
+		Destroy(Joint);
+		Body.velocity = Vector3.zero;
+		CurrentWanderingRoutine = Wander();
+		StartIdling();
+	}
+
 	private void OnCollisionEnter(Collision other)
 	{
 		if (State == PeasantState.BEING_EATEN)
