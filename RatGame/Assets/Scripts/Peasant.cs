@@ -81,6 +81,11 @@ public class Peasant : MonoBehaviour
 		StartIdling();
 	}
 
+	private void OnEnable()
+	{
+		Body.constraints = RigidbodyConstraints.FreezeRotation;
+	}
+
 	private void OnCollisionEnter(Collision other)
 	{
 		if (State == PeasantState.BEING_EATEN)
