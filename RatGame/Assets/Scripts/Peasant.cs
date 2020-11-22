@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Actor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Peasant : MonoBehaviour
@@ -33,8 +32,9 @@ public class Peasant : MonoBehaviour
 	[SerializeField] private Vector2 WalkRadiusMinMax = new Vector2(4, 10);
 	[SerializeField] private float IdleDelay = 5.0f;
 	
-	private static readonly int IsRunning = Animator.StringToHash("IsRunning");
-	private static readonly int IsWalking = Animator.StringToHash("IsWalking");
+	private static readonly int TimeToWalk = Animator.StringToHash("TimeToWalk");
+	private static readonly int NoRatNearby = Animator.StringToHash("NoRatNearby");
+	private static readonly int RatFound = Animator.StringToHash("RatFound");
 
 	private void Awake()
 	{
@@ -47,7 +47,7 @@ public class Peasant : MonoBehaviour
 		if (State == PeasantState.RUNNING)
 		{
 
-			Vector2 moveDir = new Vector2(RunningDirection.x, RunningDirection.z);
+			Vector2 moveDir = new Vector2(RunningDirection.x, RunningDirection.z) * RunningSpeed;
 			ActorBase.SetMove(moveDir);
 			
 			transform.forward = RunningDirection;
@@ -56,33 +56,42 @@ public class Peasant : MonoBehaviour
 
 	private void Start()
 	{
-		State = PeasantState.IDLE;
+		StartIdling();
 		StartCoroutine(SenseRats());
-		
-		Invoke("StartWalking", IdleDelay);
+	}
+
+	private void StartIdling()
+	{
+		State = PeasantState.IDLE;
+		StartCoroutine(StartWalkingAfterDelay());
 	}
 
 	private void StartRunning()
 	{
 		State = PeasantState.RUNNING;
 		ActorBase.SetMaxMoveSpeed(RunningSpeed);
-		Animator.SetBool(IsRunning, true);
-		Animator.SetBool(IsWalking, false);
+		Animator.SetTrigger(RatFound);
 	}
 
 	private void StopRunning()
 	{
-		State = PeasantState.IDLE;
+		StartIdling();
 		ActorBase.SetMove(Vector2.zero);
-		Animator.SetBool(IsRunning, false);
+		Animator.SetTrigger(NoRatNearby);
 	}
 
 	private void StartWalking()
 	{
 		State = PeasantState.WANDERING;
 		ActorBase.SetMaxMoveSpeed(WalkingSpeed);
-		Animator.SetBool(IsWalking, true);
+		Animator.SetTrigger(TimeToWalk);
 		CurrentWanderingRoutine = StartCoroutine(Wander());
+	}
+
+	private IEnumerator StartWalkingAfterDelay()
+	{
+		yield return new WaitForSeconds(IdleDelay);
+		StartWalking();
 	}
 
 	private IEnumerator SenseRats()
@@ -104,7 +113,6 @@ public class Peasant : MonoBehaviour
 				StartRunning();
 				if (State == PeasantState.WANDERING)
 				{
-					Animator.SetBool(IsWalking, false);
 					StopCoroutine(CurrentWanderingRoutine);
 				}
 			}
