@@ -12,7 +12,7 @@ public class Peasant : MonoBehaviour
 		BEING_EATEN
 	}
 
-	private PeasantState State;
+	private PeasantState State = PeasantState.IDLE;
 
 	private ActorBase ActorBase = null;
 	private Animator Animator = null;
@@ -21,7 +21,7 @@ public class Peasant : MonoBehaviour
 	private Vector3 WalkDestination = Vector3.zero;
 	private Vector3 MoveDirection = Vector3.zero;
 
-	private Coroutine CurrentWanderingRoutine = null;
+	private IEnumerator CurrentWanderingRoutine = null;
 
 	[SerializeField] private LayerMask RatLayer;
 
@@ -35,22 +35,31 @@ public class Peasant : MonoBehaviour
 	private static readonly int TimeToWalk = Animator.StringToHash("TimeToWalk");
 	private static readonly int NoRatNearby = Animator.StringToHash("NoRatNearby");
 	private static readonly int RatFound = Animator.StringToHash("RatFound");
+	private static readonly int WalkingDestinationReached = Animator.StringToHash("WalkingDestinationReached");
 
 	private void Awake()
 	{
 		ActorBase = GetComponent<ActorBase>();
 		Animator = GetComponent<Animator>();
+
+		CurrentWanderingRoutine = Wander();
 	}
 
 	private void Update()
 	{
 		if (State == PeasantState.RUNNING)
 		{
-
 			Vector2 moveDir = new Vector2(RunningDirection.x, RunningDirection.z) * RunningSpeed;
 			ActorBase.SetMove(moveDir);
 			
 			transform.forward = RunningDirection;
+		}
+		else if (State == PeasantState.WANDERING)
+		{
+			Vector2 moveDir = new Vector2(MoveDirection.x, MoveDirection.z) * WalkingSpeed;
+			ActorBase.SetMove(moveDir);
+
+			transform.forward = MoveDirection;
 		}
 	}
 
@@ -63,7 +72,9 @@ public class Peasant : MonoBehaviour
 	private void StartIdling()
 	{
 		State = PeasantState.IDLE;
-		StartCoroutine(StartWalkingAfterDelay());
+		StopCoroutine(CurrentWanderingRoutine);
+		CurrentWanderingRoutine = Wander();
+		StartCoroutine(CurrentWanderingRoutine);
 	}
 
 	private void StartRunning()
@@ -85,13 +96,18 @@ public class Peasant : MonoBehaviour
 		State = PeasantState.WANDERING;
 		ActorBase.SetMaxMoveSpeed(WalkingSpeed);
 		Animator.SetTrigger(TimeToWalk);
-		CurrentWanderingRoutine = StartCoroutine(Wander());
 	}
 
-	private IEnumerator StartWalkingAfterDelay()
+	private void StopWalking()
 	{
-		yield return new WaitForSeconds(IdleDelay);
-		StartWalking();
+		StartIdling();
+		ActorBase.SetMove(Vector2.zero);
+		Animator.SetTrigger(WalkingDestinationReached);
+	}
+
+	private void StartBeingEaten()
+	{
+		
 	}
 
 	private IEnumerator SenseRats()
@@ -116,7 +132,7 @@ public class Peasant : MonoBehaviour
 					StopCoroutine(CurrentWanderingRoutine);
 				}
 			}
-			else
+			else if(State == PeasantState.RUNNING)
 			{
 				StopRunning();
 			}
@@ -126,16 +142,22 @@ public class Peasant : MonoBehaviour
 
 	private IEnumerator Wander()
 	{
+		yield return new WaitForSeconds(IdleDelay);
+		StartWalking();
+		
 		Vector3 randomOnCircle = Random.onUnitSphere;
 		randomOnCircle.y = 0;
 
 		WalkDestination = transform.position + (randomOnCircle * Random.Range(WalkRadiusMinMax.x, WalkRadiusMinMax.y));
 
+		WalkDestination.y = transform.position.y;
 		while (Vector3.Distance(transform.position, WalkDestination) > 0.2f)
 		{
 			MoveDirection = (WalkDestination - transform.position);
+			yield return null;
 		}
-		
+
+		StopWalking();
 		yield return null;
 	}
 }
