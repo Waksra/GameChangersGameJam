@@ -65,7 +65,9 @@ public class Boid : MonoBehaviour
         Velocity += acceleration;
 
         float speed = Velocity.magnitude;
-        Vector3 dir = Velocity / speed;
+        Vector3 dir = Vector3.zero; 
+        if(speed != 0)
+            dir = Velocity / speed;
         speed = Mathf.Clamp(speed, MinMaxSpeed.x, MinMaxSpeed.y);
 
         Velocity = speed * dir;
@@ -192,6 +194,9 @@ public class Boid : MonoBehaviour
     
     private void OnDrawGizmosSelected()
     {
+        if (!Application.isPlaying)
+            return;
+        
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(OwnTransform.position, AlignmentRadius);
         Gizmos.color = Color.blue;
