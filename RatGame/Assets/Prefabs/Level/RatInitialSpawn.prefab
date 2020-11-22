@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 693200003249298402}
   - component: {fileID: 3563115991345131332}
-  m_Layer: 0
+  - component: {fileID: 528174130}
+  m_Layer: 9
   m_Name: RatInitialSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,3 +46,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnAmount: 20
   ratPrefab: {fileID: 9165707660087506033, guid: 13e86045dc7f0f1418ba2c9ea407d055, type: 3}
+--- !u!114 &528174130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417885278038810472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 916075b2d013ffb4bbe96e14330d6986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onStartEventVector3:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3563115991345131332}
+        m_TargetAssemblyTypeName: SpawnRats, Assembly-CSharp
+        m_MethodName: SpawnRatsAt
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
