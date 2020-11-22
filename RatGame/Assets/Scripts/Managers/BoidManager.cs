@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Actor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,8 @@ public class BoidManager : StaticManager<BoidManager>
 	private List<Boid> Boids = new List<Boid>();
 	private GameControls GameControls;
 	private int CurrentID = 0;
+
+	private List<ActorBase> Prey = new List<ActorBase>();
 
 	public Vector2 CurrentInput = Vector2.zero;
 	
@@ -54,10 +57,37 @@ public class BoidManager : StaticManager<BoidManager>
 		return position / Boids.Count;
 	}
 
+	public List<ActorBase> GetPreyInRadiusFrom(Vector3 position, float radius)
+	{
+		if (Prey.Count <= 0)
+			return null;
+		
+		List<ActorBase> preyInRange = new List<ActorBase>();
+		foreach (ActorBase prey in Prey)
+		{
+			if (Vector3.Distance(prey.transform.position, position) <= radius)
+				preyInRange.Add(prey);
+		}
+
+		if(preyInRange.Count <= 0)
+			return null;
+		return preyInRange;
+	}
+
 	public int AddBoid(Boid BoidToAdd)
 	{
 		Boids.Add(BoidToAdd);
 		CurrentID++;
 		return CurrentID;
+	}
+
+	public void AddPrey(ActorBase preyToAdd)
+	{
+		Prey.Add(preyToAdd);
+	}
+
+	public void RemovePrey(ActorBase preyToRemove)
+	{
+		Prey.Remove(preyToRemove);
 	}
 }
