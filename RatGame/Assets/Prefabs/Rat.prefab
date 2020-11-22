@@ -51,12 +51,12 @@ MonoBehaviour:
   SeparationRadius: 0.7
   AlignmentRadius: 0.9
   CohesionRadius: 2
-  PreySeekRadius: 1
+  PreySeekRadius: 5
   SeparationWeight: 1.5
   AlignmentWeight: 0.6
   CohesionWeight: 0.5
   FlowFieldWeight: 10
-  PreyWeight: 1
+  PreyWeight: 7
   MaxSteering: 500
   MinMaxSpeed: {x: 0.1, y: 3}
   MinMaxDelay: {x: 0, y: 1}
@@ -65,6 +65,8 @@ MonoBehaviour:
   CohesionFrequency: 0.14
   FlowFieldFrequency: 0.16
   SeekPreyFrequency: 0.5
+  PreyDirectonFrequency: 0.18
+  PreyReselectDistanceFactor: 1.5
 --- !u!114 &-6971276410061977755
 MonoBehaviour:
   m_ObjectHideFlags: 0

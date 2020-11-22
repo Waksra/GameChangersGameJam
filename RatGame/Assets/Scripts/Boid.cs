@@ -32,6 +32,8 @@ public class Boid : MonoBehaviour
     [Space(10)]
     [Range(1f, 3f)][SerializeField] private float PreyReselectDistanceFactor = 1.5f;
 
+    private Animator Animator = null;
+    
 
     [System.NonSerialized]
     public Vector3 Velocity = Vector3.zero;
@@ -57,6 +59,8 @@ public class Boid : MonoBehaviour
     {
         ActorBase = GetComponent<ActorBase>();
         OwnTransform = transform;
+        Animator = GetComponentInChildren<Animator>();
+        Animator.SetFloat("StartOffset", Random.Range(0, 1));
     }
 
     void Start()
