@@ -27,6 +27,12 @@ namespace Actor
             onDamaged.Invoke(transform.position);
         }
 
+        public void Heal(float amount)
+        {
+            CurrentHealth += amount;
+            CurrentHealth = Mathf.Clamp(CurrentHealth, 0, maxHealth);
+        }
+
         public void Kill()
         {
             onKill.Invoke(transform.position);

@@ -37,6 +37,13 @@ namespace Actor
 			_damageable.Damage(amount);
 		}
 
+		public void Heal(float amount)
+		{
+			if(!_hasDamageable) return;
+
+			_damageable.Heal(amount);
+		}
+
 		public void Kill()
 		{
 			if(!_hasDamageable) return;
