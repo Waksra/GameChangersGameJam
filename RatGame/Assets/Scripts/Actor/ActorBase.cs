@@ -7,6 +7,9 @@ namespace Actor
 		private MovementController _movementController;
 		private bool _hasMovementController;
 
+		private Damageable _damageable;
+		private bool _hasDamageable;
+
 		private void Awake()
 		{
 			_hasMovementController = TryGetComponent(out _movementController);
@@ -25,6 +28,19 @@ namespace Actor
 			
 			_movementController.maxSpeed = maxMovementSpeed;
 		}
-		
+
+		public void Damage(float amount)
+		{
+			if(!_hasDamageable) return;
+
+			_damageable.Damage(amount);
+		}
+
+		public void Kill()
+		{
+			if(!_hasDamageable) return;
+			
+			_damageable.Kill();
+		}
 	}
 }
