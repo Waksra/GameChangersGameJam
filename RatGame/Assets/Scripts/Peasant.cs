@@ -154,10 +154,10 @@ public class Peasant : MonoBehaviour
 		while (true)
 		{
 			ActorBase.Damage(DamagePerDelay);
-			Collider[] hits = Physics.OverlapSphere(transform.position, RatCheckDistance, RatLayer);
+			Collider[] hits = Physics.OverlapSphere(transform.position, 0.5f, RatLayer);
 			foreach (var h in hits)
 			{
-				// h.GetComponent<ActorBase>().
+				h.GetComponent<ActorBase>().Heal(DamagePerDelay);
 			}
 			yield return new WaitForSeconds(DamageDelay);
 		}
