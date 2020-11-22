@@ -78,12 +78,13 @@ public class Peasant : MonoBehaviour
 		Destroy(Joint);
 		Body.velocity = Vector3.zero;
 		CurrentWanderingRoutine = Wander();
-		StartIdling();
+		PreySetter.RemoveAsPrey();
 	}
 
 	private void OnEnable()
 	{
 		Body.constraints = RigidbodyConstraints.FreezeRotation;
+		StartIdling();
 	}
 
 	private void OnCollisionEnter(Collision other)
@@ -152,6 +153,7 @@ public class Peasant : MonoBehaviour
 	private void StartBeingEaten(Rigidbody rat)
 	{
 		State = PeasantState.BEING_EATEN;
+		ActorBase.SetMove(Vector2.zero);
 		Body.constraints = RigidbodyConstraints.None;
 		Joint = gameObject.AddComponent<HingeJoint>();
 		Joint.connectedBody = rat;
