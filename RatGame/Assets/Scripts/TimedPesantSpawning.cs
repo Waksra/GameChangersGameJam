@@ -7,10 +7,18 @@ public class TimedPesantSpawning : MonoBehaviour
 
 	public GameObject objectToSpawn;
 
+	private void Start()
+	{
+		StartCoroutine(TimedSpawn());
+	}
+
 	private IEnumerator TimedSpawn()
 	{
-		yield return new WaitForSeconds(Random.Range(minMaxTimeBetween.x, minMaxTimeBetween.y));
+		while (true)
+		{
+			yield return new WaitForSeconds(Random.Range(minMaxTimeBetween.x, minMaxTimeBetween.y));
 
-		ObjectPoolManager.GetPooledObject(objectToSpawn, transform.position, Quaternion.identity);
+			ObjectPoolManager.GetPooledObject(objectToSpawn, transform.position, Quaternion.identity);
+		}
 	}
 }

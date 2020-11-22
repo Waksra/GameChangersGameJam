@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using World;
 
 namespace Player
@@ -27,6 +28,7 @@ namespace Player
 		private void OnEnable()
 		{
 			_gameControls.Default.Move.performed += OnMovePerformed;
+			_gameControls.Default.Restart.performed += OnRestartPerformed;
 			_gameControls.Enable();
 			
 			StartCoroutine(MoveCommandCoroutine());
@@ -52,6 +54,11 @@ namespace Player
 				_targetPosition = _swarmCenter + inputInWorld * moveTargetLead;
 				GridController.Instance.PathToWorldPosition(_targetPosition);
 			}
+		}
+
+		private void OnRestartPerformed(InputAction.CallbackContext obj)
+		{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 
 		private void OnMovePerformed(InputAction.CallbackContext context)
