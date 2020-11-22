@@ -16,6 +16,11 @@ namespace Actor
             CurrentHealth = maxHealth;
         }
 
+        private void OnEnable()
+        {
+            CurrentHealth = maxHealth;
+        }
+
         public void Damage(float amount)
         {
             CurrentHealth -= amount;

@@ -11,8 +11,8 @@ public class SpawnRats : MonoBehaviour
 		for (int i = 0; i < spawnAmount; i++)
 		{
 			Quaternion randomRotation = Quaternion.Euler(Random.value * 360, Random.value * 360, Random.value * 360);
-			
-			ObjectPoolManager.GetPooledObject(ratPrefab, position, randomRotation);
+			Vector3 randomOffset = new Vector3(Random.value * 2 - 1, Random.value * 2 - 1, Random.value * 2 - 1);
+			ObjectPoolManager.GetPooledObject(ratPrefab, position + randomOffset, randomRotation);
 		}
 	}
 }
