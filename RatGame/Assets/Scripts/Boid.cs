@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Actor;
 using UnityEngine;
+using World;
 
 [SelectionBase]
 public class Boid : MonoBehaviour
@@ -13,9 +13,11 @@ public class Boid : MonoBehaviour
     [SerializeField] private float SeparationWeight = 1.0f;
     [SerializeField] private float AlignmentWeight = 1.0f;
     [SerializeField] private float CohesionWeight = 1.0f;
+    [SerializeField] private float FlowFieldWeight = 1.0f;
     [SerializeField] private float InputWeight = 1.0f;
 
     [SerializeField] private float MaxSteering = 1.0f;
+    [SerializeField] private Vector2 MinMaxSpeed = new Vector2(0.1f, 3);
     [System.NonSerialized]
     public Vector3 Velocity;
 
@@ -39,6 +41,7 @@ public class Boid : MonoBehaviour
         Velocity += acceleration;
 
         float speed = Velocity.magnitude;
+        speed = Mathf.Clamp(speed, MinMaxSpeed.x, MinMaxSpeed.y);
         Vector3 dir = Velocity / speed;
 
         Velocity = speed * dir;
@@ -50,7 +53,8 @@ public class Boid : MonoBehaviour
 
     private Vector3 CalculateDesiredDirection()
     {
-        return (CalculateSeparation() + CalculateAlignment() + CalculateCohesion() + CalculateInput());
+        return CalculateSeparation() + CalculateAlignment() + CalculateCohesion() + CalculateInput() +
+               CalculateFlowFieldMovement();
     }
 
     private Vector3 CalculateSeparation()
@@ -111,6 +115,12 @@ public class Boid : MonoBehaviour
         return cohesion * CohesionWeight;
     }
 
+    public Vector3 CalculateFlowFieldMovement()
+    {
+        Vector3 direction = GridController.Instance.GetDirectionFromWorldPosition(transform.position) * FlowFieldWeight;
+        return direction;
+    }
+
     private Vector3 CalculateInput()
     {
         Vector2 inputDirection = BoidManager.Instance.CurrentInput;
@@ -125,6 +135,9 @@ public class Boid : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, SeparationRadius);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, CohesionRadius);
+        
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(transform.position, Velocity.normalized * 4f);
     }
 
     
