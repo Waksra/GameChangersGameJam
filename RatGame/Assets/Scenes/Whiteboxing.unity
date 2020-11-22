@@ -4987,6 +4987,7 @@ GameObject:
   - component: {fileID: 224713477}
   - component: {fileID: 224713480}
   - component: {fileID: 224713481}
+  - component: {fileID: 224713482}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5107,6 +5108,19 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 199e273b85afc2e40877414696bce9d8, type: 2}
+--- !u!114 &224713482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224713476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dbddff0c6b7eaa47939efe1e4fbdca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 0, y: 10, z: 0}
 --- !u!1 &228718377
 GameObject:
   m_ObjectHideFlags: 0
@@ -7761,10 +7775,6 @@ PrefabInstance:
     - target: {fileID: 6417885278038810472, guid: b72c4b1929d77f040bf63202517430a0, type: 3}
       propertyPath: m_Name
       value: RatInitialSpawn
-      objectReference: {fileID: 0}
-    - target: {fileID: 6417885278038810472, guid: b72c4b1929d77f040bf63202517430a0, type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b72c4b1929d77f040bf63202517430a0, type: 3}
@@ -16192,52 +16202,6 @@ Transform:
   m_Father: {fileID: 1805622078}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &528174127 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6417885278038810472, guid: b72c4b1929d77f040bf63202517430a0, type: 3}
-  m_PrefabInstance: {fileID: 332564277}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &528174128 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3563115991345131332, guid: b72c4b1929d77f040bf63202517430a0, type: 3}
-  m_PrefabInstance: {fileID: 332564277}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 528174127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f39be01b815483d4d8e81336674a1f8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &528174130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 528174127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 916075b2d013ffb4bbe96e14330d6986, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  onStartEventVector3:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528174128}
-        m_TargetAssemblyTypeName: SpawnRats, Assembly-CSharp
-        m_MethodName: SpawnRatsAt
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!4 &530831742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2659878776499107519, guid: 13e86045dc7f0f1418ba2c9ea407d055, type: 3}
