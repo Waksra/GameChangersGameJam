@@ -28,6 +28,9 @@ public class Boid : MonoBehaviour
     [SerializeField] private float CohesionFrequency = 0.14f;
     [SerializeField] private float FlowFieldFrequency = 0.16f;
     [SerializeField] private float SeekPreyFrequency = 0.5f;
+    [SerializeField] private float PreyDirectonFrequency = 0.18f;
+    [Space(10)]
+    [Range(1f, 3f)][SerializeField] private float PreyReselectDistanceFactor = 1.5f;
 
 
     [System.NonSerialized]
@@ -40,6 +43,9 @@ public class Boid : MonoBehaviour
     private Transform OwnTransform;
 
     private List<ActorBase> _preyInRange;
+
+    private ActorBase _targetPrey;
+    private bool _hasTargetPrey = false;
 
     private Vector3 _separationAcceleration = Vector3.zero;
     private Vector3 _alignmentAcceleration = Vector3.zero;
@@ -92,6 +98,7 @@ public class Boid : MonoBehaviour
         StartCoroutine(CalculateCohesion());
         StartCoroutine(CalculateFlowFieldAcceleration());
         StartCoroutine(SeekPrey());
+        StartCoroutine(CalculatePreyAcceleration());
     }
 
     private IEnumerator CalculateSeparation()
@@ -187,22 +194,66 @@ public class Boid : MonoBehaviour
         WaitForSeconds delay = new WaitForSeconds(SeekPreyFrequency);
         while (true)
         {
-            _preyInRange = BoidManager.Instance.GetPreyInRadiusFrom(OwnTransform.position, PreySeekRadius);
             yield return delay;
+            
+            if(_hasTargetPrey)
+                continue;
+            
+            _preyInRange = BoidManager.Instance.GetPreyInRadiusFrom(OwnTransform.position, PreySeekRadius);
+            if(_preyInRange == null)
+                continue;
+
+            float minDistance = float.MaxValue;
+            foreach (ActorBase prey in _preyInRange)
+            {
+                float distance = Vector3.Distance(OwnTransform.position, prey.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    _targetPrey = prey;
+                    _hasTargetPrey = true;
+                }
+            }
+        }
+    }
+
+    private IEnumerator CalculatePreyAcceleration()
+    {
+        WaitForSeconds delay = new WaitForSeconds(PreyDirectonFrequency);
+        while (true)
+        {
+            yield return delay;
+            if(!_hasTargetPrey)
+                continue;
+
+            Vector3 preyPosition = _targetPrey.transform.position;
+            preyPosition.y = OwnTransform.position.y;
+            _preyAcceleration = preyPosition - OwnTransform.position;
+            float distanceToPrey = _preyAcceleration.magnitude;
+            float increasedRadius = PreySeekRadius * PreyReselectDistanceFactor;
+            if (distanceToPrey > increasedRadius)
+            {
+                _hasTargetPrey = false;
+                _preyAcceleration = Vector3.zero;
+                continue;
+            }
+            _preyAcceleration /= PreySeekRadius;
+            _preyAcceleration *= Mathf.Abs(increasedRadius - distanceToPrey) * PreyWeight;
         }
     }
     
     private void OnDrawGizmosSelected()
     {
-        if (!Application.isPlaying)
-            return;
+        Vector3 position = transform.position;
         
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(OwnTransform.position, AlignmentRadius);
+        Gizmos.DrawWireSphere(position, AlignmentRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(OwnTransform.position, SeparationRadius);
+        Gizmos.DrawWireSphere(position, SeparationRadius);
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(OwnTransform.position, CohesionRadius);
+        Gizmos.DrawWireSphere(position, CohesionRadius);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(position, PreySeekRadius);
     }
 
     
