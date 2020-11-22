@@ -60,9 +60,14 @@ namespace World
 
         public void CreateIntegrationField(Cell destinationCell)
         {
+            ResetCellBestCost();
+            
+            if (this.destinationCell != null)
+                this.destinationCell.isDestination = false;
+            
             this.destinationCell = destinationCell;
 
-            destinationCell.Cost = 0;
+            destinationCell.isDestination = true;
             destinationCell.bestCost = 0;
 
             Queue<Cell> cellsToCheck = new Queue<Cell>();
@@ -100,6 +105,14 @@ namespace World
                             GridDirection.GetDirectionFromVector2Int(neighbour.gridIndex - cell.gridIndex);
                     }
                 }
+            }
+        }
+
+        public void ResetCellBestCost()
+        {
+            foreach (Cell cell in Grid)
+            {
+                cell.bestCost = ushort.MaxValue;
             }
         }
 

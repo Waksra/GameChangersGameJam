@@ -10,7 +10,7 @@ namespace World
         private float _cellRadius;
         private Vector2Int _gridSize;
         private Vector3 _startPosition;
-        
+
         private FlowField _flowField;
         private GridDebug _debug;
 
@@ -22,9 +22,9 @@ namespace World
         private void OnValidate()
         {
             _cellRadius = cellSize / 2;
-            _gridSize.x = (int)(gridWorldSize.x / cellSize);
-            _gridSize.y = (int)(gridWorldSize.y / cellSize);
-            
+            _gridSize.x = (int) (gridWorldSize.x / cellSize);
+            _gridSize.y = (int) (gridWorldSize.y / cellSize);
+
             _startPosition.x = gridWorldSize.x / 2f;
             _startPosition.z = gridWorldSize.y / 2f;
             _startPosition.y = -_cellRadius;
@@ -34,13 +34,10 @@ namespace World
         private void Start()
         {
             InitializeFlowField();
-            if(TryGetComponent(out _debug))
+            if (TryGetComponent(out _debug))
                 _debug.SetFlowField(_flowField);
-            
+
             _flowField.CreateCostField();
-            _flowField.CreateIntegrationField(_flowField.Grid[5,5]);
-            _flowField.CreateFlowField();
-            _debug.DrawFlowField();
         }
 
         private void InitializeFlowField()
@@ -59,10 +56,26 @@ namespace World
             return direction;
         }
 
+        public void PathToWorldPosition(Vector3 worldPosition)
+        {
+            Cell targetCell = _flowField.GetCellFromWorldPos(worldPosition);
+            if (targetCell == _flowField.destinationCell)
+                return;
+
+            PathToCell(targetCell);
+        }
+
+        public void PathToCell(Cell targetCell)
+        {
+            _flowField.CreateIntegrationField(targetCell);
+            _flowField.CreateFlowField();
+            _debug.DrawFlowField();
+        }
+
         /*private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
-
+    
             Vector3 size = Vector3.one * cellSize;
             
             for (int x = 0; x < _gridSize.x; x++)

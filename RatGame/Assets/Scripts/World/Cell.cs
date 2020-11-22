@@ -8,12 +8,13 @@ namespace World
 		public Vector2Int gridIndex;
 		public ushort bestCost;
 		public GridDirection bestDirection;
+		public bool isDestination;
 		
 		private byte _cost;
 
 		public byte Cost
 		{
-			get => _cost;
+			get => isDestination ? (byte)0 : _cost;
 			set
 			{
 				if(value >= byte.MaxValue) _cost = value;
@@ -27,6 +28,7 @@ namespace World
 			_cost = 1;
 			bestCost = ushort.MaxValue;
 			bestDirection = GridDirection.None;
+			isDestination = false;
 		}
 	}
 }
