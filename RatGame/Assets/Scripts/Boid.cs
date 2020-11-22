@@ -41,14 +41,15 @@ public class Boid : MonoBehaviour
         Velocity += acceleration;
 
         float speed = Velocity.magnitude;
-        speed = Mathf.Clamp(speed, MinMaxSpeed.x, MinMaxSpeed.y);
         Vector3 dir = Velocity / speed;
+        speed = Mathf.Clamp(speed, MinMaxSpeed.x, MinMaxSpeed.y);
 
         Velocity = speed * dir;
         dir.y = 0;
         
         transform.forward = dir;
         ActorBase.SetMove(new Vector2(Velocity.x, Velocity.z));
+        Debug.DrawLine(transform.position, transform.position + Velocity, Color.blue);
     }
 
     private Vector3 CalculateDesiredDirection()
@@ -135,9 +136,6 @@ public class Boid : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, SeparationRadius);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, CohesionRadius);
-        
-        Gizmos.color = Color.white;
-        Gizmos.DrawLine(transform.position, Velocity.normalized * 4f);
     }
 
     

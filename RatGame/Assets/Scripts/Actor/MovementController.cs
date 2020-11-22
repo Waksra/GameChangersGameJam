@@ -18,7 +18,7 @@ namespace Actor
 		{
 			set
 			{
-				value *= maxSpeed;
+				value = Vector2.ClampMagnitude(value, maxSpeed);
 				_desiredVelocity.x = value.x;
 				_desiredVelocity.z = value.y;
 			}
@@ -33,9 +33,9 @@ namespace Actor
 		{
 			Vector3 velocity = _body.velocity;
 			_desiredVelocity.y = velocity.y;
-			float maxVelocityChange = maxAcceleration;
-        
-			velocity = Vector3.ClampMagnitude(Vector3.MoveTowards(velocity, _desiredVelocity, maxVelocityChange), maxSpeed);
+			float maxVelocityChange = maxAcceleration * Time.fixedDeltaTime;
+
+			velocity = Vector3.MoveTowards(velocity, _desiredVelocity, maxVelocityChange);
         
 			_body.velocity = velocity;
 		}
