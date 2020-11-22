@@ -30,6 +30,7 @@ namespace Actor
         public void Kill()
         {
             onKill.Invoke(transform.position);
+            gameObject.SetActive(false);
         }
     }
 }
