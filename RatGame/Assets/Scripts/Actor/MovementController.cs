@@ -10,7 +10,7 @@ namespace Actor
 		[SerializeField, Range(0f, 1000f)] 
 		public float maxAcceleration = 10f;
 
-		private Vector3 _desiredVelocity;
+		private Vector3 _desiredVelocity = Vector3.zero;
 
 		private Rigidbody _body;
 
