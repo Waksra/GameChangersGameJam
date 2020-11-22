@@ -12,7 +12,6 @@ namespace World
         private Vector3 _startPosition;
 
         private FlowField _flowField;
-        private GridDebug _debug;
 
         public float CellRadius => _cellRadius;
         public Vector2Int GridSize => _gridSize;
@@ -34,8 +33,6 @@ namespace World
         private void Start()
         {
             InitializeFlowField();
-            if (TryGetComponent(out _debug))
-                _debug.SetFlowField(_flowField);
 
             _flowField.CreateCostField();
         }
@@ -69,7 +66,6 @@ namespace World
         {
             _flowField.CreateIntegrationField(targetCell);
             _flowField.CreateFlowField();
-            _debug.DrawFlowField();
         }
 
         /*private void OnDrawGizmosSelected()
