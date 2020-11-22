@@ -13,6 +13,7 @@ namespace Actor
 		private void Awake()
 		{
 			_hasMovementController = TryGetComponent(out _movementController);
+			_hasDamageable = TryGetComponent(out _damageable);
 		}
 
 		public void SetMove(Vector2 movement)
