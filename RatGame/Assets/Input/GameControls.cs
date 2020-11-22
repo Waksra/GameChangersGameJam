@@ -25,6 +25,14 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""57a34e38-2c5f-4ece-a646-1111463aa7ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -82,6 +90,17 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c702b4e-4513-4b88-b3d0-d14b2ffe81cd"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -91,6 +110,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         // Default
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_Move = m_Default.FindAction("Move", throwIfNotFound: true);
+        m_Default_Restart = m_Default.FindAction("Restart", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -141,11 +161,13 @@ public class @GameControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Default;
     private IDefaultActions m_DefaultActionsCallbackInterface;
     private readonly InputAction m_Default_Move;
+    private readonly InputAction m_Default_Restart;
     public struct DefaultActions
     {
         private @GameControls m_Wrapper;
         public DefaultActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Default_Move;
+        public InputAction @Restart => m_Wrapper.m_Default_Restart;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -158,6 +180,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Move.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMove;
                 @Move.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMove;
                 @Move.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMove;
+                @Restart.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
+                @Restart.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
+                @Restart.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRestart;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -165,6 +190,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Restart.started += instance.OnRestart;
+                @Restart.performed += instance.OnRestart;
+                @Restart.canceled += instance.OnRestart;
             }
         }
     }
@@ -172,5 +200,6 @@ public class @GameControls : IInputActionCollection, IDisposable
     public interface IDefaultActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnRestart(InputAction.CallbackContext context);
     }
 }
