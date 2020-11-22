@@ -84,6 +84,7 @@ public class Peasant : MonoBehaviour
 	private void OnEnable()
 	{
 		Body.constraints = RigidbodyConstraints.FreezeRotation;
+		State = PeasantState.IDLE;
 		StartIdling();
 	}
 
@@ -222,6 +223,7 @@ public class Peasant : MonoBehaviour
 		while (Vector3.Distance(transform.position, WalkDestination) > 0.2f)
 		{
 			MoveDirection = (WalkDestination - transform.position);
+			MoveDirection.y = 0.0f;
 			yield return null;
 		}
 

@@ -38,8 +38,6 @@ public class Boid : MonoBehaviour
     [System.NonSerialized]
     public Vector3 Velocity = Vector3.zero;
 
-    [System.NonSerialized]
-    public int ID;
     private ActorBase ActorBase = null;
 
     private Transform OwnTransform;
@@ -55,6 +53,8 @@ public class Boid : MonoBehaviour
     private Vector3 _flowFieldAcceleration = Vector3.zero;
     private Vector3 _preyAcceleration = Vector3.zero;
 
+    private Vector3 _initialSwarmDirection;
+
     private void Awake()
     {
         ActorBase = GetComponent<ActorBase>();
@@ -64,10 +64,17 @@ public class Boid : MonoBehaviour
         Animator.SetFloat("StartOffset", random);
     }
 
-    void Start()
+    private void OnEnable()
     {
-        ID = BoidManager.Instance.AddBoid(this);
+        BoidManager.Instance.AddBoid(this);
+        _initialSwarmDirection = BoidManager.Instance.GetAverageDirectionOfSwarm();
         StartCoroutine(StartAccelerationCalculationWithDelay());
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        BoidManager.Instance.RemoveBoid(this);
     }
 
     void Update()
@@ -91,8 +98,12 @@ public class Boid : MonoBehaviour
 
     private Vector3 CalculateDesiredDirection()
     {
-        return _separationAcceleration + _alignmentAcceleration + _cohesionAcceleration + _flowFieldAcceleration 
-               + _preyAcceleration;
+        Vector3 direction = _separationAcceleration + _alignmentAcceleration + _cohesionAcceleration +
+                            _flowFieldAcceleration
+                            + _preyAcceleration;
+        if (direction.sqrMagnitude == 0)
+            direction = _initialSwarmDirection;
+        return direction;
     }
 
     private IEnumerator StartAccelerationCalculationWithDelay()

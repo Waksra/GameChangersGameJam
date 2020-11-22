@@ -12,13 +12,26 @@ namespace World
         private Vector3 _startPosition;
 
         private FlowField _flowField;
-
+        
         public float CellRadius => _cellRadius;
         public Vector2Int GridSize => _gridSize;
 
         public Vector3 StartPosition => _startPosition;
 
         private void OnValidate()
+        {
+            InitializeValues();
+        }
+
+        private void Awake()
+        {
+            InitializeValues();
+            InitializeFlowField();
+
+            _flowField.CreateCostField();
+        }
+
+        private void InitializeValues()
         {
             _cellRadius = cellSize / 2;
             _gridSize.x = (int) (gridWorldSize.x / cellSize);
@@ -28,13 +41,6 @@ namespace World
             _startPosition.z = gridWorldSize.y / 2f;
             _startPosition.y = -_cellRadius;
             _startPosition -= transform.position;
-        }
-
-        private void Start()
-        {
-            InitializeFlowField();
-
-            _flowField.CreateCostField();
         }
 
         private void InitializeFlowField()

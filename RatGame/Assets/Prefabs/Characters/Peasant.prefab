@@ -477,7 +477,19 @@ MonoBehaviour:
   maxHealth: 100
   onDamaged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -1666683971033161662}
+        m_TargetAssemblyTypeName: SpawnRats, Assembly-CSharp
+        m_MethodName: SpawnRatsAt
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onKill:
     m_PersistentCalls:
       m_Calls:
@@ -505,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f39be01b815483d4d8e81336674a1f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnAmount: 10
+  spawnAmount: 2
   ratPrefab: {fileID: 9165707660087506033, guid: 13e86045dc7f0f1418ba2c9ea407d055, type: 3}
 --- !u!1 &1880573082896460302
 GameObject:

@@ -1,31 +1,16 @@
 ﻿using System.Collections.Generic;
 using Actor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class BoidManager : StaticManager<BoidManager>
 {
 	private List<Boid> Boids = new List<Boid>();
-	private GameControls GameControls;
-	private int CurrentID = 0;
 
 	private List<ActorBase> Prey = new List<ActorBase>();
 
-	public Vector2 CurrentInput = Vector2.zero;
-	
-	private void Awake()
-	{
-		GameControls = new GameControls();
-		GameControls.Enable();
-
-		CurrentID = 0;
-		GameControls.Default.Move.performed += OnMovePerformed;
-	}
-
-	private void OnMovePerformed(InputAction.CallbackContext obj)
-	{
-		CurrentInput = obj.ReadValue<Vector2>();
-	}
+	private Vector3 _swarmDirection = Vector3.zero;
+	private float _swarmDirectionAllowedAge = 0.1f;
+	private float _swarmDirectionTimeStamp = 0.0f;
 
 	public List<Boid> GetBoidsInDistance(float Distance, Boid Caller)
 	{
@@ -35,7 +20,7 @@ public class BoidManager : StaticManager<BoidManager>
 		
 		foreach (Boid b in Boids)
 		{
-			if (b.ID == Caller.ID)
+			if (b == Caller)
 				continue;
 			
 			if(Vector3.Distance(b.transform.position, callerPosition) < Distance)
@@ -57,6 +42,22 @@ public class BoidManager : StaticManager<BoidManager>
 		return position / Boids.Count;
 	}
 
+	public Vector3 GetAverageDirectionOfSwarm()
+	{
+		if (Time.time <= _swarmDirectionTimeStamp + _swarmDirectionAllowedAge)
+			return _swarmDirection;
+		
+		Vector3 direction = Vector3.zero;
+		foreach (Boid boid in Boids)
+		{
+			direction += boid.Velocity;
+		}
+
+		_swarmDirectionTimeStamp = Time.time;
+		_swarmDirection = direction.normalized;
+		return _swarmDirection;
+	}
+
 	public List<ActorBase> GetPreyInRadiusFrom(Vector3 position, float radius)
 	{
 		if (Prey.Count <= 0)
@@ -74,11 +75,15 @@ public class BoidManager : StaticManager<BoidManager>
 		return preyInRange;
 	}
 
-	public int AddBoid(Boid BoidToAdd)
+	public void AddBoid(Boid BoidToAdd)
 	{
 		Boids.Add(BoidToAdd);
-		CurrentID++;
-		return CurrentID;
+	}
+
+	public void RemoveBoid(Boid boidToRemove)
+	{
+		if (Boids.Contains(boidToRemove))
+			Boids.Remove(boidToRemove);
 	}
 
 	public void AddPrey(ActorBase preyToAdd)
